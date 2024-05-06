@@ -1,11 +1,13 @@
 import { expect, describe, it, beforeAll } from 'bun:test';
 import { Rover } from '../models/Rover';
+import { Planet } from '../models/Planet';
 
 describe('Rover', () => {
   let rover: Rover;
 
   beforeAll(() => {
-    rover = new Rover();
+    const planet = new Planet('Mars');
+    rover = new Rover(planet);
   });
 
   it('should turn left', () => {

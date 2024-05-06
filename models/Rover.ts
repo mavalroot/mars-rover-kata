@@ -1,18 +1,21 @@
-import {
-  DIRECTIONS,
-  type Direction,
-  type Movement,
-  type Position,
-} from '../types';
+import { DIRECTIONS } from '../config/rover';
+import { type Direction, type Movement, type Position } from '../types';
 import { getRandomDirection, getRandomPosition } from '../utils';
+import type { Planet } from './Planet';
 
 export class Rover {
   private direction: Direction;
   private position: Position;
+  private planet: Planet;
 
-  constructor() {
+  constructor(planet: Planet) {
+    this.planet = planet;
+
+    const height = this.planet.getHeight();
+    const width = this.planet.getWidth();
+
     this.direction = getRandomDirection();
-    this.position = getRandomPosition();
+    this.position = this.launch();
   }
 
   public getDirection(): Direction {
@@ -40,6 +43,20 @@ export class Rover {
           break;
       }
     });
+  }
+
+  private launch(): Position {
+    console.log('launch');
+    const position = getRandomPosition(
+      this.planet.getWidth(),
+      this.planet.getHeight()
+    );
+
+    if (this.isObstacle(position)) {
+      return this.launch();
+    }
+
+    return position;
   }
 
   private moveForward(): void {
@@ -94,5 +111,13 @@ export class Rover {
     } else {
       this.direction = DIRECTIONS[directionIndex + 1];
     }
+  }
+
+  private isObstacle(position: Position): boolean {
+    const obstacles = this.planet.getObstacles();
+
+    return obstacles.some((obstacle) => {
+      return obstacle.x === position.x && obstacle.y === position.y;
+    });
   }
 }

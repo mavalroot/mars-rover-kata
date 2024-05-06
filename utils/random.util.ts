@@ -12,10 +12,10 @@ export function getRandomValueFromArray(arr: any[]): any {
   return arr[getRandomNumber(0, arr.length - 1)];
 }
 
-export function getRandomPosition(): Position {
+export function getRandomPosition(width = 100, height = 100): Position {
   return {
-    x: getRandomNumber(-100),
-    y: getRandomNumber(-100),
+    x: getRandomNumber(-width, width),
+    y: getRandomNumber(-height, height),
   };
 }
 

@@ -1,13 +1,7 @@
+import { Planet } from './models/Planet';
 import { Rover } from './models/Rover';
 
-const rover = new Rover();
-
-console.log(rover.getDirection());
-console.log(rover.getPosition());
+const planet = new Planet('Mars', 'hard', 'small');
+const rover = new Rover(planet);
 
 rover.move(['F']);
-
-console.log('Forward movement');
-
-console.log(rover.getDirection());
-console.log(rover.getPosition());
