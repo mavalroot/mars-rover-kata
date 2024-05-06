@@ -1,7 +1,6 @@
 import { expect, describe, it, beforeAll } from 'bun:test';
-import { Rover } from '../models/Rover';
+import { Rover, Planet } from '../models';
 import { DIRECTIONS } from '../config/rover';
-import { Planet } from '../models/Planet';
 describe('Rover', () => {
   let rover: Rover;
 

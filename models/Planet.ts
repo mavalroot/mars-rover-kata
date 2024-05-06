@@ -1,15 +1,15 @@
-import { PLANET_MIN_MAX_SIZE, PLANET_OBSTACLES } from '../config/planets';
+import { PLANET_MIN_MAX_SIZE, PLANET_OBSTACLES } from '../config';
 import { type Difficulty, type Position, type Size } from '../types';
-import { getRandomNumber, getRandomPosition } from '../utils/random.util';
+import { getRandomNumber, getRandomPosition } from '../utils';
 
 export class Planet {
-  private readonly width: number;
-  private readonly height: number;
-  private readonly length: number;
-  private readonly obstacles: Position[];
-  private readonly difficulty: Difficulty;
-  private readonly size: Size;
-  private readonly name: string;
+  private width: number;
+  private height: number;
+  private length: number;
+  private obstacles: Position[];
+  private difficulty: Difficulty;
+  private size: Size;
+  private name: string;
 
   constructor(
     name: string,

@@ -1,4 +1,4 @@
-import { DIRECTIONS } from '../config/rover';
+import { DIRECTIONS } from '../config';
 import { type Direction, type Movement, type Position } from '../types';
 import { getRandomDirection, getRandomPosition } from '../utils';
 import type { Planet } from './Planet';
@@ -7,6 +7,7 @@ export class Rover {
   private direction: Direction;
   private position: Position;
   private planet: Planet;
+  private obstacleFound?: Position;
 
   constructor(planet: Planet) {
     this.planet = planet;
@@ -26,8 +27,18 @@ export class Rover {
     return this.position;
   }
 
+  public getPlanet(): Planet {
+    return this.planet;
+  }
+
   public move(movements: Movement[]): void {
+    this.obstacleFound = undefined;
+
     movements.forEach((movement) => {
+      if (this.obstacleFound) {
+        return;
+      }
+
       switch (movement) {
         case 'F':
           this.moveForward();
@@ -43,16 +54,56 @@ export class Rover {
           break;
       }
     });
+
+    if (this.obstacleFound) {
+      console.error({
+        obstacleFound: this.obstacleFound,
+        rover: {
+          position: this.position,
+          direction: this.direction,
+        },
+      });
+    }
+  }
+
+  private checkObstacle(position: Position): boolean {
+    const obstacles = this.planet.getObstacles();
+
+    return obstacles.some((obstacle) => {
+      return obstacle.x === position.x && obstacle.y === position.y;
+    });
+  }
+
+  private checkNewBound(position: Position): Position {
+    const width = this.planet.getWidth();
+    const height = this.planet.getHeight();
+
+    if (position.x < -width) {
+      position.x = width;
+    }
+
+    if (position.x > width) {
+      position.x = -width;
+    }
+
+    if (position.y < -height) {
+      position.y = height;
+    }
+
+    if (position.y > height) {
+      position.y = -height;
+    }
+
+    return position;
   }
 
   private launch(): Position {
-    console.log('launch');
     const position = getRandomPosition(
       this.planet.getWidth(),
       this.planet.getHeight()
     );
 
-    if (this.isObstacle(position)) {
+    if (this.checkObstacle(position)) {
       return this.launch();
     }
 
@@ -60,37 +111,55 @@ export class Rover {
   }
 
   private moveForward(): void {
+    const newPosition = { ...this.position };
+
     switch (this.direction) {
       case 'N':
-        this.position.y += 1;
+        newPosition.y += 1;
         break;
       case 'E':
-        this.position.x += 1;
+        newPosition.x += 1;
         break;
       case 'S':
-        this.position.y -= 1;
+        newPosition.y -= 1;
         break;
       case 'W':
-        this.position.x -= 1;
+        newPosition.x -= 1;
         break;
     }
+
+    if (this.checkObstacle(newPosition)) {
+      this.obstacleFound = newPosition;
+      return;
+    }
+
+    this.position = this.checkNewBound(newPosition);
   }
 
   private moveBackward(): void {
+    const newPosition = { ...this.position };
+
     switch (this.direction) {
       case 'N':
-        this.position.y -= 1;
+        newPosition.y -= 1;
         break;
       case 'E':
-        this.position.x -= 1;
+        newPosition.x -= 1;
         break;
       case 'S':
-        this.position.y += 1;
+        newPosition.y += 1;
         break;
       case 'W':
-        this.position.x += 1;
+        newPosition.x += 1;
         break;
     }
+
+    if (this.checkObstacle(newPosition)) {
+      this.obstacleFound = newPosition;
+      return;
+    }
+
+    this.position = this.checkNewBound(newPosition);
   }
 
   private turnLeft(): void {
@@ -111,13 +180,5 @@ export class Rover {
     } else {
       this.direction = DIRECTIONS[directionIndex + 1];
     }
-  }
-
-  private isObstacle(position: Position): boolean {
-    const obstacles = this.planet.getObstacles();
-
-    return obstacles.some((obstacle) => {
-      return obstacle.x === position.x && obstacle.y === position.y;
-    });
   }
 }
