@@ -1,11 +1,6 @@
 import { expect, describe, it, beforeAll } from 'bun:test';
 import { Rover } from '../models/Rover';
-import {
-  DIRECTIONS,
-  type Direction,
-  type Movement,
-  type Position,
-} from '../types';
+import { DIRECTIONS } from '../types';
 
 describe('Rover', () => {
   let rover: Rover;
@@ -28,10 +23,5 @@ describe('Rover', () => {
     expect(rover.getPosition()).toBeDefined();
     expect(rover.getPosition()).toHaveProperty('x');
     expect(rover.getPosition()).toHaveProperty('y');
-  });
-
-  it('should move the rover', () => {
-    const movements: Movement[] = ['F', 'L'];
-    // Test
   });
 });
