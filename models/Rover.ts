@@ -12,9 +12,6 @@ export class Rover {
   constructor(planet: Planet) {
     this.planet = planet;
 
-    const height = this.planet.getHeight();
-    const width = this.planet.getWidth();
-
     this.direction = getRandomDirection();
     this.position = this.launch();
   }
